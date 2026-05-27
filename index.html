@@ -11,19 +11,19 @@
     <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)" crossorigin></script>
     <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
     <!-- Nhúng thư viện icon Lucide React chính xác -->
-    <script src="[https://unpkg.com/lucide-react](https://unpkg.com/lucide-react)"></script>
+    <script src="[https://unpkg.com/lucide-react@0.344.0/dist/umd/lucide-react.min.js](https://unpkg.com/lucide-react@0.344.0/dist/umd/lucide-react.min.js)"></script>
 </head>
 <body class="bg-slate-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        // Lấy các icon từ Lucide React toàn cục thông qua biến lucideReact
+        // Lấy các icon từ Lucide React toàn cục thông qua biến LucideReact
         const { 
           Search, AppWindow, Calendar, Users, Briefcase, 
           PieChart, Settings, Bell, LayoutGrid, FolderKanban, 
           FileText, Link: LinkIcon, MessageSquare, ChevronRight, Menu,
           Plus, Trash2, Edit2, X, Check, Sparkles
-        } = lucideReact;
+        } = LucideReact;
 
         // Định nghĩa ICON_MAP để hiển thị động
         const ICON_MAP = {
