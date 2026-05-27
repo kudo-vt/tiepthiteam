@@ -36,10 +36,11 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- Confirm: Neither Mermaid JS nor SVG were used in this file -->
+    <!-- Explicit confirmation: Neither Mermaid JS nor SVG were used in this file -->
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
+        <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-8 mb-10 gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xl font-extrabold shadow-lg shadow-blue-500/20 overflow-hidden">
@@ -65,15 +66,19 @@
             </div>
         </header>
 
+        <!-- Video Feature Section -->
         <section class="bg-slate-800 border border-slate-700/60 rounded-3xl p-6 mb-10 flex flex-col lg:flex-row gap-6 items-center shadow-xl">
             <div class="flex-1 space-y-4">
                 <span class="bg-blue-600/20 text-blue-400 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">🎥 Tiêu điểm truyền thông</span>
                 <h2 class="text-xl md:text-2xl font-black text-white">Video Nội Bộ</h2>
                 <p class="text-xs text-slate-400 leading-relaxed">Chào mừng bạn đến với không gian làm việc số. Mọi thắc mắc, cần hỗ trợ vui lòng liên hệ Trưởng Bộ Phận Tiếp Thị qua số 0966.723.357</p>
                 
-                <div id="video-admin-controls" class="hidden pt-2">
+                <div id="video-admin-controls" class="hidden pt-2 space-y-2">
                     <button onclick="openVideoSettingsModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-600 transition-colors shadow-md">
                         ⚙️ Cấu hình Video Portal
+                    </button>
+                    <button onclick="openSyncModal()" class="bg-slate-800 hover:bg-slate-750 text-blue-400 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 hover:border-blue-500/40 transition-colors shadow-md ml-2">
+                        🌐 Đồng bộ lên GitHub
                     </button>
                 </div>
             </div>
@@ -86,6 +91,7 @@
             </div>
         </section>
 
+        <!-- Search and Filter Panel -->
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
             <div class="flex flex-wrap gap-2" id="category-filters">
             </div>
@@ -112,6 +118,7 @@
 
     </div>
 
+    <!-- MODAL ĐĂNG NHẬP ADMIN (PASSCODE GATE) -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200 p-6">
             <div class="text-center mb-6">
@@ -138,6 +145,7 @@
         </div>
     </div>
 
+    <!-- MODAL THÊM / CHỈNH SỬA LIÊN KẾT -->
     <div id="app-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
             
@@ -168,7 +176,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Ghi chú ngắn</label>
-                    <input id="form-desc" type="text" placeholder="Mô tả công dụng cho cả nhóm..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+                    <input id="form-desc" type="text" placeholder="Mô tả công dụng cho cả nhóm..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 text-xs text-white focus:outline-none focus:border-blue-500" />
                 </div>
 
                 <div>
@@ -188,6 +196,7 @@
         </div>
     </div>
 
+    <!-- MODAL CẤU HÌNH VIDEO TRUYỀN THÔNG -->
     <div id="video-settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
             <div class="px-6 py-4 bg-slate-900 border-b border-slate-700/50 flex items-center justify-between">
@@ -197,7 +206,7 @@
             <form onsubmit="saveVideoSettings(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Đường dẫn Video hoặc Mã nhúng <span class="text-red-500">*</span></label>
-                    <textarea id="video-form-url" required placeholder="Dán link mp4, link YouTube, link Facebook, link Reels, hoặc dán trực tiếp mã nhúng <iframe> của Facebook vào đây..." rows="4" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500 resize-none font-mono"></textarea>
+                    <textarea id="video-form-url" required placeholder="Dán link mp4, link YouTube, link Facebook, link Reels, hoặc dán trực tiếp mã nhúng <iframe> của Facebook vào đây..." rows="4" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 resize-none font-mono"></textarea>
                     <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
                         <strong>Hỗ trợ cực mạnh:</strong><br/>
                         1. Dán đường dẫn trực tiếp: <code class="text-blue-400">.mp4</code><br/>
@@ -214,6 +223,32 @@
         </div>
     </div>
 
+    <!-- MODAL ĐỒNG BỘ TOÀN BỘ FILE INDEX.HTML -->
+    <div id="sync-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200 p-6">
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 rounded-full bg-blue-950 text-blue-500 flex items-center justify-center mx-auto mb-3 text-xl font-bold">🌐</div>
+                <h3 class="font-extrabold text-white text-lg">Đồng bộ dữ liệu lên GitHub</h3>
+                <p class="text-slate-400 text-xs mt-1">Hệ thống đã tự động đóng gói toàn bộ mã nguồn mới có sẵn dữ liệu của bạn. Nhấp vào nút sao chép, sau đó dán đè toàn bộ vào tệp <code class="text-blue-400">index.html</code> trên GitHub.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mã nguồn toàn bộ tệp index.html mới</span>
+                        <button onclick="copyToClipboard('sync-full-code', this)" class="text-xs text-white font-bold bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl transition-all shadow-md">Sao chép toàn bộ file</button>
+                    </div>
+                    <textarea id="sync-full-code" readonly class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-[10px] text-slate-300 font-mono h-56 focus:outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end pt-4 mt-4 border-t border-slate-700/50">
+                <button type="button" onclick="closeSyncModal()" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-bold rounded-xl transition-colors">Đóng cửa sổ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIALOG SYSTEM -->
     <div id="dialog-confirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-full bg-red-950 text-red-500 flex items-center justify-center mx-auto mb-4 text-xl font-bold">⚠️</div>
@@ -240,6 +275,7 @@
             { name: 'Document', url: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80' }
         ];
 
+        // Biến cấu hình ứng dụng mặc định ban đầu
         const defaultApps = [
             { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Vận hành', description: 'Đăng ký phép, duyệt lịch nghỉ và bảng công.', image: PRESET_IMAGES[2].url, link: 'https://docs.google.com/spreadsheets' },
             { id: 2, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard trực quan kết quả kinh doanh realtime.', image: PRESET_IMAGES[0].url, link: 'https://lookerstudio.google.com' },
@@ -247,7 +283,7 @@
             { id: 4, name: 'Quản lý Dự án & Task', category: 'Hệ thống', description: 'Kanban board quản trị sprint và tiến độ phân công.', image: PRESET_IMAGES[4].url, link: 'https://trello.com' }
         ];
 
-        const defaultVideoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-working-at-a-creative-office-segment-12185-large.mp4';
+        const defaultVideoUrl = "https://assets.mixkit.co/videos/preview/mixkit-working-at-a-creative-office-segment-12185-large.mp4";
 
         let apps = JSON.parse(localStorage.getItem('corp_hub_apps')) || defaultApps;
         let videoUrl = localStorage.getItem('corp_hub_video_url') || defaultVideoUrl;
@@ -266,13 +302,11 @@
         function renderFilters() {
             const container = document.getElementById('category-filters');
             const allCats = ['Tất cả', ...CATEGORIES];
-            container.innerHTML = allCats.map(cat => `
-                <button onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
-                    selectedCategory === cat 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700/60'
-                }">${cat}</button>
-            `).join('');
+            container.innerHTML = allCats.map(function(cat) {
+                return '<button onclick="selectCategory(\'' + cat + '\')" class="px-4 py-2 rounded-2xl text-xs font-bold transition-all ' +
+                    (selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700/60') +
+                    '">' + cat + '</button>';
+            }).join('');
         }
 
         function selectCategory(cat) {
@@ -302,50 +336,42 @@
             grid.classList.remove('hidden');
             emptyState.classList.add('hidden');
 
-            grid.innerHTML = filtered.map(app => `
-                <div class="group relative bg-slate-800 border border-slate-700/60 rounded-3xl overflow-hidden shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/40 transition-all duration-300 flex flex-col h-full">
-                    
-                    <a href="${isAdminMode ? 'javascript:void(0)' : app.link}" ${isAdminMode ? '' : 'target="_blank" rel="noopener noreferrer"'} class="block flex-1 flex flex-col">
-                        
-                        <div class="relative h-48 w-full overflow-hidden bg-slate-900">
-                            <img src="${app.image || PRESET_IMAGES[3].url}" alt="${app.name}" class="app-card-img w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>
-                            
-                            <div class="absolute top-4 left-4">
-                                <span class="bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">
-                                    ${app.category}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="text-base font-extrabold text-white group-hover:text-blue-400 transition-colors line-clamp-1 mb-2">
-                                ${app.name}
-                            </h3>
-                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4">
-                                ${app.description || 'Không có mô tả cho liên kết này.'}
-                            </p>
-                            <span class="mt-auto inline-flex items-center text-[11px] font-bold text-blue-400 uppercase tracking-wider group-hover:text-blue-300 transition-colors">
-                                ${isAdminMode ? 'Bấm nút chỉnh sửa' : 'Truy cập liên kết ↗'}
-                            </span>
-                        </div>
-                    </a>
-
-                    ${isAdminMode ? `
-                        <div class="absolute top-4 right-4 flex gap-1.5 z-20">
-                            <button onclick="openEditModal(${app.id})" class="p-2 bg-slate-800/90 hover:bg-blue-600 text-slate-200 hover:text-white rounded-xl border border-slate-700 hover:border-transparent transition-all shadow-md" title="Chỉnh sửa link">
-                                ✏️
-                            </button>
-                            <button onclick="confirmDeleteApp(${app.id}, '${app.name}')" class="p-2 bg-slate-800/90 hover:bg-red-600 text-slate-200 hover:text-white rounded-xl border border-slate-700 hover:border-transparent transition-all shadow-md" title="Xóa">
-                                🗑️
-                            </button>
-                        </div>
-                    ` : ''}
-
-                </div>
-            `).join('');
+            grid.innerHTML = filtered.map(function(app) {
+                var isClickable = isAdminMode ? 'javascript:void(0)' : app.link;
+                var targetAttr = isAdminMode ? '' : 'target="_blank" rel="noopener noreferrer"';
+                
+                var html = '';
+                html += '<div class="group relative bg-slate-800 border border-slate-700/60 rounded-3xl overflow-hidden shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/40 transition-all duration-300 flex flex-col h-full">';
+                html += '    <a href="' + isClickable + '" ' + targetAttr + ' class="block flex-1 flex flex-col">';
+                html += '        <div class="relative h-48 w-full overflow-hidden bg-slate-900">';
+                html += '            <img src="' + (app.image || PRESET_IMAGES[3].url) + '" alt="' + app.name + '" class="app-card-img w-full h-full object-cover" />';
+                html += '            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>';
+                html += '            <div class="absolute top-4 left-4">';
+                html += '                <span class="bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">' + app.category + '</span>';
+                html += '            </div>';
+                html += '        </div>';
+                html += '        <div class="p-5 flex-1 flex flex-col">';
+                html += '            <h3 class="text-base font-extrabold text-white group-hover:text-blue-400 transition-colors line-clamp-1 mb-2">' + app.name + '</h3>';
+                html += '            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4">' + (app.description || 'Không có mô tả cho liên kết này.') + '</p>';
+                html += '            <span class="mt-auto inline-flex items-center text-[11px] font-bold text-blue-400 uppercase tracking-wider group-hover:text-blue-300 transition-colors">';
+                html += '                ' + (isAdminMode ? 'Bấm nút chỉnh sửa' : 'Truy cập liên kết ↗');
+                html += '            </span>';
+                html += '        </div>';
+                html += '    </a>';
+                
+                if (isAdminMode) {
+                    html += '    <div class="absolute top-4 right-4 flex gap-1.5 z-20">';
+                    html += '        <button onclick="openEditModal(' + app.id + ')" class="p-2 bg-slate-800/90 hover:bg-blue-600 text-slate-200 hover:text-white rounded-xl border border-slate-700 hover:border-transparent transition-all shadow-md" title="Chỉnh sửa link">✏️</button>';
+                    html += '        <button onclick="confirmDeleteApp(' + app.id + ', \'' + app.name.replace(/'/g, "\\'") + '\')" class="p-2 bg-slate-800/90 hover:bg-red-600 text-slate-200 hover:text-white rounded-xl border border-slate-700 hover:border-transparent transition-all shadow-md" title="Xóa">🗑️</button>';
+                    html += '    </div>';
+                }
+                
+                html += '</div>';
+                return html;
+            }).join('');
         }
 
+        // Bật / Tắt chế độ quản trị viên
         function setupModeToggle() {
             const btn = document.getElementById('mode-toggle');
             const ball = document.getElementById('mode-toggle-ball');
@@ -423,19 +449,19 @@
 
         function setupFormSelects() {
             const select = document.getElementById('form-category');
-            select.innerHTML = CATEGORIES.map(cat => `
-                <option value="${cat}">${cat}</option>
-            `).join('');
+            select.innerHTML = CATEGORIES.map(function(cat) {
+                return '<option value="' + cat + '">' + cat + '</option>';
+            }).join('');
         }
 
         function renderPresetSelectors() {
             const container = document.getElementById('image-presets');
-            container.innerHTML = PRESET_IMAGES.map(img => `
-                <button type="button" onclick="setPresetImageUrl('${img.url}', this)" class="preset-img-btn border-2 border-transparent hover:border-blue-500 rounded-lg overflow-hidden transition-all relative h-16 bg-slate-950">
-                    <img src="${img.url}" class="w-full h-full object-cover opacity-70" />
-                    <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-slate-300 px-1 rounded truncate w-11/12">${img.name}</span>
-                </button>
-            `).join('');
+            container.innerHTML = PRESET_IMAGES.map(function(img) {
+                return '<button type="button" onclick="setPresetImageUrl(\'' + img.url + '\', this)" class="preset-img-btn border-2 border-transparent hover:border-blue-500 rounded-lg overflow-hidden transition-all relative h-16 bg-slate-950">' +
+                    '    <img src="' + img.url + '" class="w-full h-full object-cover opacity-70" />' +
+                    '    <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-slate-300 px-1 rounded truncate w-11/12">' + img.name + '</span>' +
+                    '</button>';
+            }).join('');
         }
 
         function setPresetImageUrl(url, element) {
@@ -532,7 +558,7 @@
             const fbMatch = url.match(fbRegExp);
             if (fbMatch) {
                 const fbVideoUrlEncoded = encodeURIComponent(url);
-                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${fbVideoUrlEncoded}&show_text=0&width=480" class="w-full h-full" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+                container.innerHTML = '<iframe src="https://www.facebook.com/plugins/video.php?href=' + fbVideoUrlEncoded + '&show_text=0&width=480" class="w-full h-full" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>';
                 
                 topOverlay.classList.remove('hidden');
                 bottomOverlay.classList.remove('hidden');
@@ -544,12 +570,12 @@
 
             if (match && match[2].length === 11) {
                 const videoId = match[2];
-                container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&showinfo=0&controls=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                container.innerHTML = '<iframe class="w-full h-full" src="https://www.youtube.com/embed/' + videoId + '?autoplay=0&rel=0&modestbranding=1&showinfo=0&controls=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
                 
                 topOverlay.classList.remove('hidden');
                 return;
             } else {
-                container.innerHTML = `<video class="w-full h-full object-cover" controls src="${url}"></video>`;
+                container.innerHTML = '<video class="w-full h-full object-cover" controls src="' + url + '"></video>';
             }
         }
 
@@ -571,6 +597,32 @@
                 renderVideoPlayer();
                 closeVideoSettingsModal();
             }
+        }
+
+        function openSyncModal() {
+            const syncTextArea = document.getElementById('sync-full-code');
+            syncTextArea.value = getEntireHtmlCode();
+            document.getElementById('sync-modal').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('sync-modal').classList.add('hidden');
+        }
+
+        function copyToClipboard(elementId, btn) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            
+            const originalText = btn.innerText;
+            btn.innerText = 'Đã chép toàn bộ! ✓';
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+            btn.classList.add('bg-emerald-600', 'text-white');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+            }, 2000);
         }
 
         function filterApps() {
@@ -604,14 +656,14 @@
         function confirmDeleteApp(id, name) {
             showCustomDialog(
                 'Xác nhận gỡ liên kết',
-                `Bạn có chắc chắn muốn gỡ bỏ lối tắt đến "${name}" khỏi cổng thông tin không?`,
+                'Bạn có chắc chắn muốn gỡ bỏ lối tắt đến "' + name + '" khỏi cổng thông tin không?',
                 true,
-                () => {
-                    apps = apps.filter(app => app.id !== id);
+                function() {
+                    apps = apps.filter(function(app) { return app.id !== id; });
                     saveData();
                     renderApps();
                 }
-            );
+            ); 
         }
 
         function resetToDefault() {
@@ -619,7 +671,7 @@
                 'Khôi phục dữ liệu',
                 'Hành động này sẽ thiết lập lại cổng thông tin về các ứng dụng mẫu ban đầu. Toàn bộ các liên kết bạn đã thêm sẽ bị xóa.',
                 true,
-                () => {
+                function() {
                     apps = defaultApps;
                     videoUrl = defaultVideoUrl;
                     localStorage.removeItem('corp_hub_video_url');
@@ -627,7 +679,27 @@
                     renderVideoPlayer();
                     renderApps();
                 }
-            );
+            ); 
+        }
+
+        // Tự động bóc tách và tạo mã nguồn an toàn dựa trên DOM hiện tại của trang
+        function getEntireHtmlCode() {
+            // Lấy toàn bộ mã HTML nguyên bản của trang
+            var docHTML = document.documentElement.outerHTML;
+            
+            // Ép dữ liệu Apps thành JSON dạng chuỗi
+            var appsJsonString = JSON.stringify(apps, null, 12);
+            
+            // Tìm và thay thế mảng cấu hình mặc định (defaultApps) bằng mảng apps hiện tại
+            var regexApps = /const\s+defaultApps\s*=\s*\[[\s\S]*?\];/;
+            docHTML = docHTML.replace(regexApps, 'const defaultApps = ' + appsJsonString + ';');
+            
+            // Tìm và thay thế đường dẫn video mặc định bằng đường dẫn video hiện tại
+            var regexVideo = /const\s+defaultVideoUrl\s*=\s*"[^"]*";/;
+            docHTML = docHTML.replace(regexVideo, 'const defaultVideoUrl = "' + videoUrl.replace(/"/g, '\\"') + '";');
+            
+            // Chèn thẻ doctype bị thiếu trong thuộc tính documentElement
+            return '<!DOCTYPE html>\n' + docHTML;
         }
     </script>
 </body>
