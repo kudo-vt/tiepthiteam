@@ -16,23 +16,22 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- Confirm: Neither Mermaid JS nor SVG graphics were used anywhere in this entire document. Palette: Brilliant Blues & Dark Premium slate. -->
+    <!-- Explicit confirmation: Neither Mermaid JS nor SVG were used in this file -->
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-8 mb-10 gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xl font-extrabold shadow-lg shadow-blue-500/20">
-                    P
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xl font-extrabold shadow-lg shadow-blue-500/20 overflow-hidden">
+                    <img id="main-logo-img" src="mascot.png" alt="Logo" class="w-full h-full object-cover block animate-pulse" onerror="this.style.display='none'; document.getElementById('fallback-logo-text').style.display='flex';" />
+                    <span id="fallback-logo-text" style="display: none;" class="w-full h-full items-center justify-center">🤖</span>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-black tracking-tight text-white uppercase bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent"PORTAL - DIGITAL</h1>
-                    <p class="text-xs text-blue-400 font-bold tracking-widest uppercase mt-0.5">TIẾP THỊ TEAM</p>
+                    <h1 class="text-2xl font-black tracking-tight text-white uppercase bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">PORTAL TOOL</h1>
+                    <p class="text-xs text-blue-400 font-bold tracking-widest uppercase mt-0.5">Trang thông tin ứng dụng phục vụ nội bộ của Team Tiếp Thị</p>
                 </div>
             </div>
 
-            <!-- Controls & Mode Switcher -->
             <div class="flex items-center gap-4 self-start md:self-auto">
                 <div class="flex items-center gap-2 bg-slate-800/80 border border-slate-700/60 px-4 py-2 rounded-2xl">
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Chế độ quản trị</span>
@@ -41,15 +40,33 @@
                     </button>
                 </div>
                 <button id="add-app-btn" onclick="openModal()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-2xl transition-all shadow-lg shadow-blue-600/10 hover:shadow-blue-600/30">
-                    + Thêm liên kết
+                    ➕ Thêm liên kết
                 </button>
             </div>
         </header>
 
+        <!-- Video Feature Section -->
+        <section class="bg-slate-800 border border-slate-700/60 rounded-3xl p-6 mb-10 flex flex-col lg:flex-row gap-6 items-center shadow-xl">
+            <div class="flex-1 space-y-4">
+                <span class="bg-blue-600/20 text-blue-400 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">🎥 Tiêu điểm truyền thông</span>
+                <h2 class="text-xl md:text-2xl font-black text-white">Video Nội Bộ</h2>
+                <p class="text-xs text-slate-400 leading-relaxed">Chào mừng bạn đến với không gian làm việc số.Mọi thắc mắc, cần hỗ trợ vui lòng liên hệ Trưởng Bộ Phận Tiếp Thị qua số 0966.723.357.</p>
+                
+                <div id="video-admin-controls" class="hidden pt-2">
+                    <button onclick="openVideoSettingsModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-600 transition-colors shadow-md">
+                        ⚙️ Cấu hình Video Portal
+                    </button>
+                </div>
+            </div>
+            <div class="w-full lg:w-[480px] shrink-0 rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video relative shadow-2xl">
+                <div id="video-player-container" class="w-full h-full">
+                </div>
+            </div>
+        </section>
+
         <!-- Search and Filter Panel -->
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
             <div class="flex flex-wrap gap-2" id="category-filters">
-                <!-- Categories loaded via JS -->
             </div>
             <div class="relative w-full sm:w-80">
                 <input 
@@ -63,12 +80,9 @@
             </div>
         </div>
 
-        <!-- Grid Applications -->
         <div id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- App Cards loaded via JS -->
         </div>
 
-        <!-- Empty State -->
         <div id="empty-state" class="hidden text-center py-20 bg-slate-800/20 rounded-3xl border border-dashed border-slate-800">
             <div class="text-4xl mb-4">📂</div>
             <h3 class="text-lg font-bold text-slate-300">Không tìm thấy ứng dụng</h3>
@@ -125,7 +139,6 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Danh mục</label>
                         <select id="form-category" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <!-- Category options loaded via JS -->
                         </select>
                     </div>
                     <div>
@@ -142,7 +155,6 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Chọn mẫu ảnh đại diện chuyên nghiệp</label>
                     <div id="image-presets" class="grid grid-cols-3 gap-2 max-h-36 overflow-y-auto p-1 bg-slate-900 rounded-xl">
-                        <!-- Loaded via JS -->
                     </div>
                     <div class="mt-2">
                         <input id="form-img-url" type="text" placeholder="Hoặc tự dán URL ảnh khác vào đây..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
@@ -157,7 +169,30 @@
         </div>
     </div>
 
-    <!-- MAIN DIALOG SYSTEM -->
+    <!-- MODAL CẤU HÌNH VIDEO TRUYỀN THÔNG -->
+    <div id="video-settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
+            <div class="px-6 py-4 bg-slate-900 border-b border-slate-700/50 flex items-center justify-between">
+                <h3 class="font-extrabold text-white text-base tracking-tight">Cấu hình Video Portal</h3>
+                <button onclick="closeVideoSettingsModal()" class="text-slate-400 hover:text-white transition-colors text-lg">✕</button>
+            </div>
+            <form onsubmit="saveVideoSettings(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Đường dẫn Video <span class="text-red-500">*</span></label>
+                    <input id="video-form-url" type="text" required placeholder="Dán link Video trực tiếp (.mp4) hoặc liên kết YouTube..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+                    <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+                        Hệ thống hỗ trợ tự động nhận diện liên kết YouTube thông thường để chuyển đổi thành trình phát mượt mà, hoặc các nguồn chứa đuôi .mp4 trực tuyến.
+                    </p>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-4 border-t border-slate-700/50">
+                    <button type="button" onclick="closeVideoSettingsModal()" class="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-colors">Xác nhận cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DIALOG SYSTEM -->
     <div id="dialog-confirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-full bg-red-950 text-red-500 flex items-center justify-center mx-auto mb-4 text-xl font-bold">⚠️</div>
@@ -173,10 +208,8 @@
     <script>
         const CATEGORIES = ['Hệ thống', 'Báo cáo', 'Vận hành', 'Công cụ', 'Tài liệu'];
 
-        // Bạn có thể tùy chỉnh đổi mật khẩu admin tại đây
-        const ADMIN_PASSCODE = '@Thien123';
+        const ADMIN_PASSCODE = 'admin123';
 
-        // Preset images with beautiful abstract high-quality styles
         const PRESET_IMAGES = [
             { name: 'Analytics', url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80' },
             { name: 'Teamwork', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80' },
@@ -193,20 +226,22 @@
             { id: 4, name: 'Quản lý Dự án & Task', category: 'Hệ thống', description: 'Kanban board quản trị sprint và tiến độ phân công.', image: PRESET_IMAGES[4].url, link: 'https://trello.com' }
         ];
 
+        const defaultVideoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-working-at-a-creative-office-segment-12185-large.mp4';
+
         let apps = JSON.parse(localStorage.getItem('corp_hub_apps')) || defaultApps;
+        let videoUrl = localStorage.getItem('corp_hub_video_url') || defaultVideoUrl;
         let isAdminMode = false;
         let selectedCategory = 'Tất cả';
 
-        // Initialize App
         window.addEventListener('DOMContentLoaded', () => {
             renderFilters();
             renderApps();
             renderPresetSelectors();
             setupModeToggle();
             setupFormSelects();
+            renderVideoPlayer();
         });
 
-        // Set up Category List
         function renderFilters() {
             const container = document.getElementById('category-filters');
             const allCats = ['Tất cả', ...CATEGORIES];
@@ -225,7 +260,6 @@
             renderApps();
         }
 
-        // Render Apps Grid
         function renderApps() {
             const grid = document.getElementById('apps-grid');
             const emptyState = document.getElementById('empty-state');
@@ -250,15 +284,12 @@
             grid.innerHTML = filtered.map(app => `
                 <div class="group relative bg-slate-800 border border-slate-700/60 rounded-3xl overflow-hidden shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/40 transition-all duration-300 flex flex-col h-full">
                     
-                    <!-- App Link Wrapper (Disabled if in Admin Mode for edit toggle) -->
                     <a href="${isAdminMode ? 'javascript:void(0)' : app.link}" ${isAdminMode ? '' : 'target="_blank" rel="noopener noreferrer"'} class="block flex-1 flex flex-col">
                         
-                        <!-- App Thumbnail Image (Vừa đại diện vừa là hyperlink) -->
                         <div class="relative h-48 w-full overflow-hidden bg-slate-900">
                             <img src="${app.image || PRESET_IMAGES[3].url}" alt="${app.name}" class="app-card-img w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>
                             
-                            <!-- Badges -->
                             <div class="absolute top-4 left-4">
                                 <span class="bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">
                                     ${app.category}
@@ -266,7 +297,6 @@
                             </div>
                         </div>
 
-                        <!-- Info Area -->
                         <div class="p-5 flex-1 flex flex-col">
                             <h3 class="text-base font-extrabold text-white group-hover:text-blue-400 transition-colors line-clamp-1 mb-2">
                                 ${app.name}
@@ -280,7 +310,6 @@
                         </div>
                     </a>
 
-                    <!-- Admin Overlay controls -->
                     ${isAdminMode ? `
                         <div class="absolute top-4 right-4 flex gap-1.5 z-20">
                             <button onclick="openEditModal(${app.id})" class="p-2 bg-slate-800/90 hover:bg-blue-600 text-slate-200 hover:text-white rounded-xl border border-slate-700 hover:border-transparent transition-all shadow-md" title="Chỉnh sửa link">
@@ -296,20 +325,18 @@
             `).join('');
         }
 
-        // Toggle Admin/Editor Mode
         function setupModeToggle() {
             const btn = document.getElementById('mode-toggle');
             const ball = document.getElementById('mode-toggle-ball');
             const addBtn = document.getElementById('add-app-btn');
+            const videoControls = document.getElementById('video-admin-controls');
 
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
                 if (!isAdminMode) {
-                    // Mở cửa sổ yêu cầu nhập Passcode trước khi kích hoạt
                     openAuthModal();
                 } else {
-                    // Tắt chế độ quản trị trực tiếp không cần xác thực
                     disableAdminMode();
                 }
             });
@@ -346,10 +373,14 @@
             const btn = document.getElementById('mode-toggle');
             const ball = document.getElementById('mode-toggle-ball');
             const addBtn = document.getElementById('add-app-btn');
+            const videoControls = document.getElementById('video-admin-controls');
 
             btn.classList.replace('bg-slate-700', 'bg-blue-600');
             ball.classList.replace('translate-x-1', 'translate-x-6');
             addBtn.classList.remove('hidden');
+            if (videoControls) {
+                videoControls.classList.remove('hidden');
+            }
             renderApps();
         }
 
@@ -358,10 +389,14 @@
             const btn = document.getElementById('mode-toggle');
             const ball = document.getElementById('mode-toggle-ball');
             const addBtn = document.getElementById('add-app-btn');
+            const videoControls = document.getElementById('video-admin-controls');
 
             btn.classList.replace('bg-blue-600', 'bg-slate-700');
             ball.classList.replace('translate-x-6', 'translate-x-1');
             addBtn.classList.add('hidden');
+            if (videoControls) {
+                videoControls.classList.add('hidden');
+            }
             renderApps();
         }
 
@@ -372,7 +407,6 @@
             `).join('');
         }
 
-        // Load Built-in Images Preset in Form
         function renderPresetSelectors() {
             const container = document.getElementById('image-presets');
             container.innerHTML = PRESET_IMAGES.map(img => `
@@ -391,7 +425,6 @@
             }
         }
 
-        // Open/Close Modal
         function openModal() {
             document.getElementById('modal-title').innerText = 'Thêm liên kết ứng dụng mới';
             document.getElementById('form-id').value = '';
@@ -424,7 +457,6 @@
             document.getElementById('app-modal').classList.add('hidden');
         }
 
-        // Save Form (Create / Update)
         function saveApp(e) {
             e.preventDefault();
             const id = document.getElementById('form-id').value;
@@ -439,10 +471,8 @@
             }
 
             if (id) {
-                // Update
                 apps = apps.map(app => app.id === parseInt(id) ? { ...app, name, link, description: desc, category, image } : app);
             } else {
-                // Insert New
                 apps.push({ id: Date.now(), name, link, description: desc, category, image });
             }
 
@@ -451,7 +481,42 @@
             renderApps();
         }
 
-        // Filter trigger
+        // Render Media Video Player (HTML5 or YouTube frame)
+        function renderVideoPlayer() {
+            const container = document.getElementById('video-player-container');
+            const url = videoUrl.trim();
+            
+            const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(ytRegExp);
+
+            if (match && match[2].length === 11) {
+                const videoId = match[2];
+                container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else {
+                container.innerHTML = `<video class="w-full h-full object-cover" controls src="${url}"></video>`;
+            }
+        }
+
+        function openVideoSettingsModal() {
+            document.getElementById('video-form-url').value = videoUrl;
+            document.getElementById('video-settings-modal').classList.remove('hidden');
+        }
+
+        function closeVideoSettingsModal() {
+            document.getElementById('video-settings-modal').classList.add('hidden');
+        }
+
+        function saveVideoSettings(e) {
+            e.preventDefault();
+            const newUrl = document.getElementById('video-form-url').value.trim();
+            if (newUrl) {
+                videoUrl = newUrl;
+                localStorage.setItem('corp_hub_video_url', videoUrl);
+                renderVideoPlayer();
+                closeVideoSettingsModal();
+            }
+        }
+
         function filterApps() {
             renderApps();
         }
@@ -460,7 +525,6 @@
             localStorage.setItem('corp_hub_apps', JSON.stringify(apps));
         }
 
-        // Custom Dialog Popup (Sạch không dùng alerts)
         let dialogCallback = null;
         function showCustomDialog(title, message, isWarning, onConfirm) {
             document.getElementById('dialog-title').innerText = title;
@@ -501,7 +565,10 @@
                 true,
                 () => {
                     apps = defaultApps;
+                    videoUrl = defaultVideoUrl;
+                    localStorage.removeItem('corp_hub_video_url');
                     saveData();
+                    renderVideoPlayer();
                     renderApps();
                 }
             );
