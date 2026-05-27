@@ -12,11 +12,31 @@
         .group:hover .app-card-img {
             transform: scale(1.08);
         }
+        .video-secure-overlay-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            background-color: transparent;
+            z-index: 20;
+            pointer-events: auto;
+        }
+        .video-secure-overlay-bottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 130px;
+            height: 48px;
+            background-color: transparent;
+            z-index: 20;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- Explicit confirmation: Neither Mermaid JS nor SVG were used in this file -->
+    <!-- Confirm: Neither Mermaid JS nor SVG were used in this file -->
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
@@ -45,12 +65,11 @@
             </div>
         </header>
 
-        <!-- Video Feature Section -->
         <section class="bg-slate-800 border border-slate-700/60 rounded-3xl p-6 mb-10 flex flex-col lg:flex-row gap-6 items-center shadow-xl">
             <div class="flex-1 space-y-4">
                 <span class="bg-blue-600/20 text-blue-400 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">🎥 Tiêu điểm truyền thông</span>
                 <h2 class="text-xl md:text-2xl font-black text-white">Video Nội Bộ</h2>
-                <p class="text-xs text-slate-400 leading-relaxed">Chào mừng bạn đến với không gian làm việc số.Mọi thắc mắc, cần hỗ trợ vui lòng liên hệ Trưởng Bộ Phận Tiếp Thị qua số 0966.723.357.</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Chào mừng bạn đến với không gian làm việc số. Mọi thắc mắc, cần hỗ trợ vui lòng liên hệ Trưởng Bộ Phận Tiếp Thị qua số 0966.723.357</p>
                 
                 <div id="video-admin-controls" class="hidden pt-2">
                     <button onclick="openVideoSettingsModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-600 transition-colors shadow-md">
@@ -59,12 +78,14 @@
                 </div>
             </div>
             <div class="w-full lg:w-[480px] shrink-0 rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video relative shadow-2xl">
-                <div id="video-player-container" class="w-full h-full">
+                <div id="secure-top-overlay" class="video-secure-overlay-top hidden"></div>
+                <div id="secure-bottom-overlay" class="video-secure-overlay-bottom hidden"></div>
+                
+                <div id="video-player-container" class="w-full h-full flex items-center justify-center">
                 </div>
             </div>
         </section>
 
-        <!-- Search and Filter Panel -->
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
             <div class="flex flex-wrap gap-2" id="category-filters">
             </div>
@@ -91,7 +112,6 @@
 
     </div>
 
-    <!-- MODAL ĐĂNG NHẬP ADMIN (PASSCODE GATE) -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200 p-6">
             <div class="text-center mb-6">
@@ -118,7 +138,6 @@
         </div>
     </div>
 
-    <!-- MODAL THÊM / CHỈNH SỬA LIÊN KẾT -->
     <div id="app-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
             
@@ -169,7 +188,6 @@
         </div>
     </div>
 
-    <!-- MODAL CẤU HÌNH VIDEO TRUYỀN THÔNG -->
     <div id="video-settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
             <div class="px-6 py-4 bg-slate-900 border-b border-slate-700/50 flex items-center justify-between">
@@ -178,10 +196,14 @@
             </div>
             <form onsubmit="saveVideoSettings(event)" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Đường dẫn Video <span class="text-red-500">*</span></label>
-                    <input id="video-form-url" type="text" required placeholder="Dán link Video trực tiếp (.mp4) hoặc liên kết YouTube..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Đường dẫn Video hoặc Mã nhúng <span class="text-red-500">*</span></label>
+                    <textarea id="video-form-url" required placeholder="Dán link mp4, link YouTube, link Facebook, link Reels, hoặc dán trực tiếp mã nhúng <iframe> của Facebook vào đây..." rows="4" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500 resize-none font-mono"></textarea>
                     <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
-                        Hệ thống hỗ trợ tự động nhận diện liên kết YouTube thông thường để chuyển đổi thành trình phát mượt mà, hoặc các nguồn chứa đuôi .mp4 trực tuyến.
+                        <strong>Hỗ trợ cực mạnh:</strong><br/>
+                        1. Dán đường dẫn trực tiếp: <code class="text-blue-400">.mp4</code><br/>
+                        2. Dán link video YouTube thông thường.<br/>
+                        3. Dán link video/Reels Facebook thông thường (ví dụ: <code class="text-blue-400">facebook.com/reel/...</code> hoặc <code class="text-blue-400">facebook.com/watch/...</code>).<br/>
+                        4. Dán thẳng <strong>mã nhúng iframe</strong> lấy từ Facebook.
                     </p>
                 </div>
                 <div class="flex items-center justify-end gap-2 pt-4 border-t border-slate-700/50">
@@ -192,7 +214,6 @@
         </div>
     </div>
 
-    <!-- DIALOG SYSTEM -->
     <div id="dialog-confirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-full bg-red-950 text-red-500 flex items-center justify-center mx-auto mb-4 text-xl font-bold">⚠️</div>
@@ -481,17 +502,52 @@
             renderApps();
         }
 
-        // Render Media Video Player (HTML5 or YouTube frame)
         function renderVideoPlayer() {
             const container = document.getElementById('video-player-container');
+            const topOverlay = document.getElementById('secure-top-overlay');
+            const bottomOverlay = document.getElementById('secure-bottom-overlay');
             const url = videoUrl.trim();
             
+            topOverlay.classList.add('hidden');
+            bottomOverlay.classList.add('hidden');
+
+            if (url.toLowerCase().startsWith('<iframe') && url.toLowerCase().endsWith('</iframe>')) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(url, 'text/html');
+                const iframe = doc.querySelector('iframe');
+                if (iframe) {
+                    iframe.className = "w-full h-full";
+                    iframe.style.width = "100%";
+                    iframe.style.height = "100%";
+                    container.innerHTML = "";
+                    container.appendChild(iframe);
+                    
+                    topOverlay.classList.remove('hidden');
+                    bottomOverlay.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            const fbRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch)\/(?:watch\/\?v=|video\.php\?v=|v\/|.*\/videos\/|reel\/)(\d+|[A-Za-z0-9_-]+)/;
+            const fbMatch = url.match(fbRegExp);
+            if (fbMatch) {
+                const fbVideoUrlEncoded = encodeURIComponent(url);
+                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${fbVideoUrlEncoded}&show_text=0&width=480" class="w-full h-full" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+                
+                topOverlay.classList.remove('hidden');
+                bottomOverlay.classList.remove('hidden');
+                return;
+            }
+
             const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(ytRegExp);
 
             if (match && match[2].length === 11) {
                 const videoId = match[2];
-                container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&showinfo=0&controls=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                
+                topOverlay.classList.remove('hidden');
+                return;
             } else {
                 container.innerHTML = `<video class="w-full h-full object-cover" controls src="${url}"></video>`;
             }
