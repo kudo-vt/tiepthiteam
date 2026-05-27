@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Portal - Kho Ứng Dụng Nội Bộ</title>
+    <!-- Nhúng Tailwind CSS để dựng giao diện đẹp -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Nhúng React và Babel để chạy trực tiếp React trên trình duyệt không cần build -->
+    <script src="[https://unpkg.com/react@18/umd/react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js)" crossorigin></script>
+    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)" crossorigin></script>
+    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
+    <!-- Nhúng thư viện icon Lucide -->
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <!-- Dán toàn bộ code React từ file AppHub.jsx vào đây -->
+    <script type="text/babel">
+        // Lấy các icon từ Lucide toàn cục
+        const { 
+          Search, AppWindow, Calendar, Users, Briefcase, 
+          PieChart, Settings, Bell, LayoutGrid, FolderKanban, 
+          FileText, Link: LinkIcon, MessageSquare, ChevronRight, Menu,
+          Plus, Trash2, Edit2, X, Check, Sparkles
+        } = lucide;
+
+        // Định nghĩa ICON_MAP để hiển thị động
+        const ICON_MAP = {
+          Calendar, FolderKanban, PieChart, LinkIcon, FileText, 
+          Users, MessageSquare, AppWindow, Briefcase, Settings
+        };
+
+        const COLOR_MAP = [
+          { text: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-200', name: 'Xanh dương' },
+          { text: 'text-emerald-600', bg: 'bg-emerald-100', border: 'border-emerald-200', name: 'Xanh lá' },
+          { text: 'text-indigo-600', bg: 'bg-indigo-100', border: 'border-indigo-200', name: 'Tím Indigo' },
+          { text: 'text-violet-600', bg: 'bg-violet-100', border: 'border-violet-200', name: 'Tím Violet' },
+          { text: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-200', name: 'Cam' },
+          { text: 'text-rose-600', bg: 'bg-rose-100', border: 'border-rose-200', name: 'Hồng/Đỏ' },
+          { text: 'text-cyan-600', bg: 'bg-cyan-100', border: 'border-cyan-200', name: 'Xanh Cyan' },
+          { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-200', name: 'Vàng Amber' }
+        ];
+
+        const defaultApps = [
+          { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Nhân sự', description: 'Đăng ký, theo dõi ngày phép.', iconName: 'Calendar', colorIndex: 0, link: '[https://docs.google.com/spreadsheets](https://docs.google.com/spreadsheets)' },
+          { id: 2, name: 'Theo dõi Tiến độ Dự án', category: 'Dự án', description: 'Kanban board quản lý task.', iconName: 'FolderKanban', colorIndex: 2, link: '[https://trello.com](https://trello.com)' },
+          { id: 3, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard tổng hợp số liệu kinh doanh.', iconName: 'PieChart', colorIndex: 1, link: '[https://lookerstudio.google.com](https://lookerstudio.google.com)' }
+        ];
+
+        const categories = ['Tất cả', 'Nhân sự', 'Dự án', 'Công cụ', 'Báo cáo', 'Vận hành'];
+
+        function App() {
+          const [apps, setApps] = React.useState(() => {
+            const saved = localStorage.getItem('team_hub_apps');
+            return saved ? JSON.parse(saved) : defaultApps;
+          });
+          const [searchQuery, setSearchQuery] = React.useState('');
+          const [activeCategory, setActiveCategory] = React.useState('Tất cả');
+          const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+          const [isAdminMode, setIsAdminMode] = React.useState(false);
+          const [isModalOpen, setIsModalOpen] = React.useState(false);
+          const [editingApp, setEditingApp] = React.useState(null);
+
+          const [formName, setFormName] = React.useState('');
+          const [formCategory, setFormCategory] = React.useState('Công cụ');
+          const [formDescription, setFormDescription] = React.useState('');
+          const [formLink, setFormLink] = React.useState('');
+          const [formIcon, setFormIcon] = React.useState('AppWindow');
+          const [formColorIndex, setFormColorIndex] = React.useState(0);
+
+          React.useEffect(() => {
+            localStorage.setItem('team_hub_apps', JSON.stringify(apps));
+          }, [apps]);
+
+          const handleOpenAddModal = () => {
+            setEditingApp(null); setFormName(''); setFormCategory('Công cụ'); setFormDescription(''); setFormLink(''); setFormIcon('AppWindow'); setFormColorIndex(0);
+            setIsModalOpen(true);
+          };
+
+          const handleOpenEditModal = (app) => {
+            setEditingApp(app); setFormName(app.name); setFormCategory(app.category); setFormDescription(app.description); setFormLink(app.link); setFormIcon(app.iconName || 'AppWindow'); setFormColorIndex(app.colorIndex || 0);
+            setIsModalOpen(true);
+          };
+
+          const handleSaveApp = (e) => {
+            e.preventDefault();
+            let formattedLink = formLink.trim();
+            if (!/^https?:\/\//i.test(formattedLink) && formattedLink !== '#') {
+              formattedLink = 'https://' + formattedLink;
+            }
+            if (editingApp) {
+              setApps(apps.map(item => item.id === editingApp.id ? { ...item, name: formName, category: formCategory, description: formDescription, link: formattedLink, iconName: formIcon, colorIndex: formColorIndex } : item));
+            } else {
+              setApps([...apps, { id: Date.now(), name: formName, category: formCategory, description: formDescription, link: formattedLink, iconName: formIcon, colorIndex: formColorIndex }]);
+            }
+            setIsModalOpen(false);
+          };
+
+          const handleDeleteApp = (id, name) => {
+            if (window.confirm(`Bạn có muốn xóa lối tắt đến "${name}"?`)) {
+              setApps(apps.filter(item => item.id !== id));
+            }
+          };
+
+          const filteredApps = apps.filter(app => {
+            return (app.name.toLowerCase().includes(searchQuery.toLowerCase()) || app.description.toLowerCase().includes(searchQuery.toLowerCase())) && (activeCategory === 'Tất cả' || app.category === activeCategory);
+          });
+
+          return (
+            <div className="min-h-screen bg-slate-50 font-sans flex flex-col md:flex-row">
+              {/* Sidebar */}
+              <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
+                <div className="h-full flex flex-col justify-between">
+                  <div>
+                    <div className="p-6 flex items-center gap-3 border-b border-slate-100">
+                      <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white p-2.5 rounded-xl">
+                        <LayoutGrid size={22} />
+                      </div>
+                      <div>
+                        <h1 className="text-lg font-extrabold text-slate-800">Team Hub</h1>
+                        <p className="text-xs text-slate-400">Ứng dụng nội bộ</p>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-3">Phân loại</p>
+                      <nav className="space-y-1">
+                        {categories.map(category => (
+                          <button key={category} onClick={() => { setActiveCategory(category); setIsMobileMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold ${activeCategory === category ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}>
+                            <span>{category}</span>
+                            {activeCategory === category && <ChevronRight size={16} />}
+                          </button>
+                        ))}
+                      </nav>
+                    </div>
+                  </div>
+                  <div className="p-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-semibold text-slate-400 uppercase">Chế độ Admin</span>
+                      <button onClick={() => setIsAdminMode(!isAdminMode)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAdminMode ? 'bg-blue-600' : 'bg-slate-200'}`}>
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isAdminMode ? 'translate-x-6' : 'translate-x-1'}`} />
+                      </button>
+                    </div>
+                    {isAdminMode && (
+                      <button onClick={handleOpenAddModal} className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+                        <Plus size={16} /> Thêm ứng dụng
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </aside>
+
+              {/* Main Content */}
+              <main className="flex-1 flex flex-col h-screen overflow-hidden">
+                <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                  <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 text-slate-600"><Menu size={22} /></button>
+                  <div className="relative max-w-md w-full hidden sm:block">
+                    <input type="text" placeholder="Tìm ứng dụng..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl text-sm border focus:outline-none" />
+                    <Search size={18} className="absolute left-3 top-2.5 text-slate-400" />
+                  </div>
+                  <div className="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">
+                    {isAdminMode ? 'Chế độ Admin' : 'Chế độ xem'}
+                  </div>
+                </header>
+
+                <div className="flex-1 overflow-y-auto p-6 md:p-8">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-extrabold text-slate-800">Xin chào, Team! ⚡</h2>
+                    <p className="text-xs text-slate-500">Danh sách lối tắt truy cập các công cụ của phòng ban.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredApps.map(app => {
+                      const SelectedIcon = ICON_MAP[app.iconName] || AppWindow;
+                      const color = COLOR_MAP[app.colorIndex || 0];
+                      return (
+                        <div key={app.id} className="group relative bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all flex flex-col h-full">
+                          {isAdminMode && (
+                            <div className="absolute top-4 right-4 flex gap-1">
+                              <button onClick={() => handleOpenEditModal(app)} className="p-1 bg-slate-50 hover:bg-blue-50 text-slate-500 rounded"><Edit2 size={12} /></button>
+                              <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1 bg-slate-50 hover:bg-red-50 text-slate-500 rounded"><Trash2 size={12} /></button>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-start mb-3">
+                            <div className={`p-2.5 rounded-xl ${color.bg} ${color.text}`}><SelectedIcon size={20} /></div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 rounded-full">{app.category}</span>
+                          </div>
+                          <h3 className="font-bold text-slate-800 mb-1">{app.name}</h3>
+                          <p className="text-xs text-slate-500 mb-4 flex-1">{app.description}</p>
+                          <a href={app.link} target="_blank" rel="noreferrer" className="mt-auto py-2 bg-slate-50 hover:bg-blue-600 hover:text-white rounded-xl text-xs font-bold text-center transition-all block">Truy cập trực tiếp</a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </main>
+
+              {/* Modal form */}
+              {isModalOpen && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+                  <div className="bg-white p-6 rounded-2xl max-w-md w-full">
+                    <h3 className="font-bold text-slate-800 mb-4">{editingApp ? 'Sửa ứng dụng' : 'Thêm ứng dụng mới'}</h3>
+                    <form onSubmit={handleSaveApp} className="space-y-3 text-xs">
+                      <input type="text" required placeholder="Tên ứng dụng" value={formName} onChange={e => setFormName(e.target.value)} className="w-full p-2 border rounded-lg" />
+                      <input type="text" required placeholder="Link URL" value={formLink} onChange={e => setFormLink(e.target.value)} className="w-full p-2 border rounded-lg" />
+                      <textarea placeholder="Mô tả" value={formDescription} onChange={e => setFormDescription(e.target.value)} className="w-full p-2 border rounded-lg" />
+                      <select value={formCategory} onChange={e => setFormCategory(e.target.value)} className="w-full p-2 border rounded-lg bg-white">
+                        {categories.filter(c => c !== 'Tất cả').map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <div className="flex justify-end gap-2 pt-2">
+                        <button type="button" onClick={() => setIsModalOpen(false)} className="px-3 py-1.5 text-slate-500">Hủy</button>
+                        <button type="submit" className="px-4 py-1.5 bg-blue-600 text-white rounded-lg">Lưu</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
