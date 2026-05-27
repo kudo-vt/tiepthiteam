@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Portal - Kho Ứng Dụng Nội Bộ</title>
-    <!-- Nhúng Tailwind CSS chính xác không chứa ký tự lạ -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Nhúng Tailwind CSS bằng phương pháp tải động để chống lỗi tự động dịch link -->
+    <script>
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://' + 'cdn.tailwindcss.com';
+            document.head.appendChild(script);
+        })();
+    </script>
 </head>
 <body class="bg-slate-50 min-h-screen font-sans flex flex-col md:flex-row antialiased">
 
@@ -240,13 +246,14 @@
             { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-200', name: 'Vàng Amber' }
         ];
 
+        // Sử dụng nối chuỗi 'https://' + 'domain' để ngăn chặn hoàn toàn trình biên dịch Canvas tự dịch sang Markdown []()
         const defaultApps = [
-            { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Nhân sự', description: 'Đăng ký, theo dõi và duyệt ngày phép năm.', iconName: 'Calendar', colorIndex: 0, link: '[https://docs.google.com/spreadsheets](https://docs.google.com/spreadsheets)' },
-            { id: 2, name: 'Theo dõi Tiến độ Dự án', category: 'Dự án', description: 'Kanban board quản lý các công việc và tiến độ.', iconName: 'FolderKanban', colorIndex: 2, link: '[https://trello.com](https://trello.com)' },
-            { id: 3, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard tổng hợp số liệu trực quan phòng kinh doanh.', iconName: 'PieChart', colorIndex: 1, link: '[https://lookerstudio.google.com](https://lookerstudio.google.com)' },
-            { id: 4, name: 'Tạo UTM Link Marketing', category: 'Công cụ', description: 'Công cụ tạo nhanh liên kết theo dõi chiến dịch.', iconName: 'LinkIcon', colorIndex: 4, link: '[https://bitly.com](https://bitly.com)' },
-            { id: 5, name: 'Wiki & Tài liệu Vận hành', category: 'Vận hành', description: 'Hướng dẫn, quy chuẩn làm việc cho nhân viên mới.', iconName: 'FileText', colorIndex: 7, link: '[https://notion.so](https://notion.so)' },
-            { id: 6, name: 'Danh bạ Nhân sự Team', category: 'Nhân sự', description: 'Tra cứu thông tin liên hệ và vị trí các thành viên.', iconName: 'Users', colorIndex: 6, link: '[https://contacts.google.com](https://contacts.google.com)' }
+            { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Nhân sự', description: 'Đăng ký, theo dõi và duyệt ngày phép năm.', iconName: 'Calendar', colorIndex: 0, link: 'https://' + '[docs.google.com/spreadsheets](https://docs.google.com/spreadsheets)' },
+            { id: 2, name: 'Theo dõi Tiến độ Dự án', category: 'Dự án', description: 'Kanban board quản lý các công việc và tiến độ.', iconName: 'FolderKanban', colorIndex: 2, link: 'https://' + 'trello.com' },
+            { id: 3, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard tổng hợp số liệu trực quan phòng kinh doanh.', iconName: 'PieChart', colorIndex: 1, link: 'https://' + 'lookerstudio.google.com' },
+            { id: 4, name: 'Tạo UTM Link Marketing', category: 'Công cụ', description: 'Công cụ tạo nhanh liên kết theo dõi chiến dịch.', iconName: 'LinkIcon', colorIndex: 4, link: 'https://' + 'bitly.com' },
+            { id: 5, name: 'Wiki & Tài liệu Vận hành', category: 'Vận hành', description: 'Hướng dẫn, quy chuẩn làm việc cho nhân viên mới.', iconName: 'FileText', colorIndex: 7, link: 'https://' + 'notion.so' },
+            { id: 6, name: 'Danh bạ Nhân sự Team', category: 'Nhân sự', description: 'Tra cứu thông tin liên hệ và vị trí các thành viên.', iconName: 'Users', colorIndex: 6, link: 'https://' + 'contacts.google.com' }
         ];
 
         const categories = ['Tất cả', 'Nhân sự', 'Dự án', 'Công cụ', 'Báo cáo', 'Vận hành'];
