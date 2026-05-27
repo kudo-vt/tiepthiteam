@@ -4,223 +4,565 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Portal - Kho Ứng Dụng Nội Bộ</title>
-    <!-- Nhúng Tailwind CSS để dựng giao diện đẹp -->
+    <!-- Nhúng Tailwind CSS chính xác không chứa ký tự lạ -->
     <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <!-- Nhúng React và Babel để chạy trực tiếp React trên trình duyệt không cần build -->
-    <script src="[https://unpkg.com/react@18/umd/react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js)" crossorigin></script>
-    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)" crossorigin></script>
-    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
-    <!-- Nhúng thư viện icon Lucide React chính xác -->
-    <script src="[https://unpkg.com/lucide-react@0.344.0/dist/umd/lucide-react.min.js](https://unpkg.com/lucide-react@0.344.0/dist/umd/lucide-react.min.js)"></script>
 </head>
-<body class="bg-slate-50">
-    <div id="root"></div>
+<body class="bg-slate-50 min-h-screen font-sans flex flex-col md:flex-row antialiased">
 
-    <script type="text/babel">
-        // Lấy các icon từ Lucide React toàn cục thông qua biến LucideReact
-        const { 
-          Search, AppWindow, Calendar, Users, Briefcase, 
-          PieChart, Settings, Bell, LayoutGrid, FolderKanban, 
-          FileText, Link: LinkIcon, MessageSquare, ChevronRight, Menu,
-          Plus, Trash2, Edit2, X, Check, Sparkles
-        } = LucideReact;
+    <!-- Sidebar (Thanh bên trái) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col">
+        <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+            <div class="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white p-2.5 rounded-xl shadow-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-800 leading-none">Team Portal</h1>
+                <p class="text-[11px] text-slate-400 font-medium mt-1">Kho ứng dụng nội bộ</p>
+            </div>
+        </div>
 
-        // Định nghĩa ICON_MAP để hiển thị động
-        const ICON_MAP = {
-          Calendar, FolderKanban, PieChart, LinkIcon, FileText, 
-          Users, MessageSquare, AppWindow, Briefcase, Settings
+        <div class="p-4 flex-1 overflow-y-auto">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">Phân loại</p>
+            <nav id="category-list" class="space-y-1">
+                <!-- Danh mục sẽ hiển thị ở đây qua JS -->
+            </nav>
+
+            <div class="mt-8 border-t border-slate-100 pt-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Chế độ Admin</span>
+                    <button id="admin-toggle-btn" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-slate-200">
+                        <span id="admin-toggle-circle" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                    </button>
+                </div>
+                
+                <div id="admin-actions" class="hidden space-y-2 px-1">
+                    <button onclick="openAddModal()" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Thêm ứng dụng mới
+                    </button>
+                    <button onclick="resetToDefault()" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-red-600 transition-colors">
+                        Khôi phục dữ liệu gốc
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3 px-3 py-2">
+                <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-slate-200 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                    IT
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-slate-800 truncate">Hệ thống Nội bộ</p>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        Hoạt động ổn định
+                    </span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay cho Mobile -->
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-slate-900/40 z-30 backdrop-blur-xs"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0">
+            <div class="flex items-center gap-4 flex-1">
+                <button onclick="toggleMobileSidebar(true)" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div class="relative max-w-md w-full hidden sm:block">
+                    <input
+                        id="search-input"
+                        type="text"
+                        placeholder="Tìm kiếm ứng dụng, công cụ..."
+                        class="block w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 focus:bg-white"
+                        oninput="handleSearch(this.value)"
+                    />
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span id="role-badge" class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                    Chế độ xem
+                </span>
+            </div>
+        </header>
+
+        <!-- Content Body -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-8">
+            <!-- Search trên Mobile -->
+            <div class="relative mb-6 sm:hidden">
+                <input
+                    id="search-input-mobile"
+                    type="text"
+                    placeholder="Tìm kiếm ứng dụng..."
+                    class="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                    oninput="handleSearch(this.value)"
+                />
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-2xl font-extrabold text-slate-800 mb-1 tracking-tight">Xin chào, Team! ⚡</h2>
+                <p class="text-sm text-slate-500">Mục lục liên kết nhanh đến tất cả công cụ vận hành nội bộ.</p>
+            </div>
+
+            <!-- Grid chứa các thẻ app -->
+            <div id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Nội dung thẻ App sẽ render tự động tại đây -->
+            </div>
+
+            <!-- Khung trống khi không tìm thấy kết quả -->
+            <div id="no-results" class="hidden text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-50 text-slate-400 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1">Không tìm thấy công cụ</h3>
+                <p class="text-sm text-slate-500">Hãy thử tìm từ khóa khác hoặc chuyển danh mục.</p>
+                <button onclick="clearFilters()" class="mt-4 px-4 py-2 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 text-xs transition-colors">
+                    Xóa các bộ lọc
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL THÊM / SỬA ỨNG DỤNG -->
+    <div id="app-modal" class="hidden fixed inset-0 bg-slate-950/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-transform duration-200">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <h3 id="modal-title" class="text-base font-bold text-slate-800">Thêm Ứng Dụng Mới</h3>
+                <button onclick="closeModal()" class="p-1.5 hover:bg-slate-200 text-slate-400 hover:text-slate-600 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <form onsubmit="handleFormSubmit(event)" class="p-6 space-y-4 text-slate-700">
+                <input type="hidden" id="form-id" />
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tên ứng dụng <span class="text-red-500">*</span></label>
+                    <input id="form-name" type="text" required placeholder="Ví dụ: Google Drive của Phòng kế toán" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phân mục</label>
+                        <select id="form-category" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <!-- Options được đổ tự động -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Đường dẫn (URL) <span class="text-red-500">*</span></label>
+                        <input id="form-link" type="text" required placeholder="https://..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mô tả ngắn</label>
+                    <textarea id="form-description" placeholder="Ghi chú nhanh về công dụng của công cụ này..." rows="2" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Biểu tượng & Màu sắc</label>
+                    <div id="color-selector" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                        <!-- Đổ bảng màu qua JS -->
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Hủy bỏ</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md">Lưu ứng dụng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HỘP THOẠI THÔNG BÁO XÁC NHẬN ĐẸP MẮT (CUSTOM DIALOG) -->
+    <div id="confirm-dialog" class="hidden fixed inset-0 bg-slate-950/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl border border-slate-100">
+            <div id="confirm-icon-box" class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h4 id="confirm-title" class="text-base font-bold text-slate-800 mb-2">Xác nhận hành động</h4>
+            <p id="confirm-msg" class="text-xs text-slate-500 mb-6">Bạn có chắc chắn muốn thực hiện việc này không?</p>
+            <div class="flex justify-center gap-2">
+                <button id="confirm-cancel-btn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">Đóng</button>
+                <button id="confirm-ok-btn" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-all">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HỘP THOẠI CHỈ CẦN THÔNG BÁO (ALERT BOX) -->
+    <div id="alert-dialog" class="hidden fixed inset-0 bg-slate-950/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl border border-slate-100">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h4 class="text-base font-bold text-slate-800 mb-2">Thông báo</h4>
+            <p id="alert-msg" class="text-xs text-slate-500 mb-6">Thông báo hệ thống</p>
+            <button onclick="closeAlert()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all">Đã hiểu</button>
+        </div>
+    </div>
+
+    <!-- CHƯƠNG TRÌNH JAVASCRIPT ĐIỀU KHIỂN CHÍNH -->
+    <script>
+        // Mẫu biểu tượng SVG vẽ trực tiếp cho từng app
+        const SVG_ICONS = {
+            Calendar: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`,
+            FolderKanban: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>`,
+            PieChart: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>`,
+            LinkIcon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`,
+            FileText: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`,
+            Users: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`,
+            MessageSquare: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>`,
+            AppWindow: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 7a1 1 0 011-1h14a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5z"></path></svg>`,
+            Briefcase: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
+            Settings: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
         };
 
         const COLOR_MAP = [
-          { text: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-200', name: 'Xanh dương' },
-          { text: 'text-emerald-600', bg: 'bg-emerald-100', border: 'border-emerald-200', name: 'Xanh lá' },
-          { text: 'text-indigo-600', bg: 'bg-indigo-100', border: 'border-indigo-200', name: 'Tím Indigo' },
-          { text: 'text-violet-600', bg: 'bg-violet-100', border: 'border-violet-200', name: 'Tím Violet' },
-          { text: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-200', name: 'Cam' },
-          { text: 'text-rose-600', bg: 'bg-rose-100', border: 'border-rose-200', name: 'Hồng/Đỏ' },
-          { text: 'text-cyan-600', bg: 'bg-cyan-100', border: 'border-cyan-200', name: 'Xanh Cyan' },
-          { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-200', name: 'Vàng Amber' }
+            { text: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-200', name: 'Xanh dương' },
+            { text: 'text-emerald-600', bg: 'bg-emerald-100', border: 'border-emerald-200', name: 'Xanh lá' },
+            { text: 'text-indigo-600', bg: 'bg-indigo-100', border: 'border-indigo-200', name: 'Tím Indigo' },
+            { text: 'text-violet-600', bg: 'bg-violet-100', border: 'border-violet-200', name: 'Tím Violet' },
+            { text: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-200', name: 'Cam' },
+            { text: 'text-rose-600', bg: 'bg-rose-100', border: 'border-rose-200', name: 'Hồng/Đỏ' },
+            { text: 'text-cyan-600', bg: 'bg-cyan-100', border: 'border-cyan-200', name: 'Xanh Cyan' },
+            { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-200', name: 'Vàng Amber' }
         ];
 
         const defaultApps = [
-          { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Nhân sự', description: 'Đăng ký, theo dõi ngày phép.', iconName: 'Calendar', colorIndex: 0, link: '[https://docs.google.com/spreadsheets](https://docs.google.com/spreadsheets)' },
-          { id: 2, name: 'Theo dõi Tiến độ Dự án', category: 'Dự án', description: 'Kanban board quản lý task.', iconName: 'FolderKanban', colorIndex: 2, link: '[https://trello.com](https://trello.com)' },
-          { id: 3, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard tổng hợp số liệu kinh doanh.', iconName: 'PieChart', colorIndex: 1, link: '[https://lookerstudio.google.com](https://lookerstudio.google.com)' }
+            { id: 1, name: 'Hệ thống Quản lý Ngày phép', category: 'Nhân sự', description: 'Đăng ký, theo dõi và duyệt ngày phép năm.', iconName: 'Calendar', colorIndex: 0, link: '[https://docs.google.com/spreadsheets](https://docs.google.com/spreadsheets)' },
+            { id: 2, name: 'Theo dõi Tiến độ Dự án', category: 'Dự án', description: 'Kanban board quản lý các công việc và tiến độ.', iconName: 'FolderKanban', colorIndex: 2, link: '[https://trello.com](https://trello.com)' },
+            { id: 3, name: 'Báo cáo Doanh thu & KPIs', category: 'Báo cáo', description: 'Dashboard tổng hợp số liệu trực quan phòng kinh doanh.', iconName: 'PieChart', colorIndex: 1, link: '[https://lookerstudio.google.com](https://lookerstudio.google.com)' },
+            { id: 4, name: 'Tạo UTM Link Marketing', category: 'Công cụ', description: 'Công cụ tạo nhanh liên kết theo dõi chiến dịch.', iconName: 'LinkIcon', colorIndex: 4, link: '[https://bitly.com](https://bitly.com)' },
+            { id: 5, name: 'Wiki & Tài liệu Vận hành', category: 'Vận hành', description: 'Hướng dẫn, quy chuẩn làm việc cho nhân viên mới.', iconName: 'FileText', colorIndex: 7, link: '[https://notion.so](https://notion.so)' },
+            { id: 6, name: 'Danh bạ Nhân sự Team', category: 'Nhân sự', description: 'Tra cứu thông tin liên hệ và vị trí các thành viên.', iconName: 'Users', colorIndex: 6, link: '[https://contacts.google.com](https://contacts.google.com)' }
         ];
 
         const categories = ['Tất cả', 'Nhân sự', 'Dự án', 'Công cụ', 'Báo cáo', 'Vận hành'];
 
-        function App() {
-          const [apps, setApps] = React.useState(() => {
-            const saved = localStorage.getItem('team_hub_apps');
-            return saved ? JSON.parse(saved) : defaultApps;
-          });
-          const [searchQuery, setSearchQuery] = React.useState('');
-          const [activeCategory, setActiveCategory] = React.useState('Tất cả');
-          const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-          const [isAdminMode, setIsAdminMode] = React.useState(false);
-          const [isModalOpen, setIsModalOpen] = React.useState(false);
-          const [editingApp, setEditingApp] = React.useState(null);
+        // KHỞI TẠO STATE BAN ĐẦU
+        let apps = JSON.parse(localStorage.getItem('team_hub_apps')) || defaultApps;
+        let searchQuery = '';
+        let activeCategory = 'Tất cả';
+        let isAdminMode = false;
+        let selectedColorIndex = 0;
+        let selectedIconName = 'AppWindow';
 
-          const [formName, setFormName] = React.useState('');
-          const [formCategory, setFormCategory] = React.useState('Công cụ');
-          const [formDescription, setFormDescription] = React.useState('');
-          const [formLink, setFormLink] = React.useState('');
-          const [formIcon, setFormIcon] = React.useState('AppWindow');
-          const [formColorIndex, setFormColorIndex] = React.useState(0);
+        // GỌI KHI TẢI TRANG
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderApps();
+            setupColorSelector();
+            setupFormCategories();
+            setupAdminToggle();
+        });
 
-          React.useEffect(() => {
-            localStorage.setItem('team_hub_apps', JSON.stringify(apps));
-          }, [apps]);
-
-          const handleOpenAddModal = () => {
-            setEditingApp(null); setFormName(''); setFormCategory('Công cụ'); setFormDescription(''); setFormLink(''); setFormIcon('AppWindow'); setFormColorIndex(0);
-            setIsModalOpen(true);
-          };
-
-          const handleOpenEditModal = (app) => {
-            setEditingApp(app); setFormName(app.name); setFormCategory(app.category); setFormDescription(app.description); setFormLink(app.link); setFormIcon(app.iconName || 'AppWindow'); setFormColorIndex(app.colorIndex || 0);
-            setIsModalOpen(true);
-          };
-
-          const handleSaveApp = (e) => {
-            e.preventDefault();
-            let formattedLink = formLink.trim();
-            if (!/^https?:\/\//i.test(formattedLink) && formattedLink !== '#') {
-              formattedLink = 'https://' + formattedLink;
-            }
-            if (editingApp) {
-              setApps(apps.map(item => item.id === editingApp.id ? { ...item, name: formName, category: formCategory, description: formDescription, link: formattedLink, iconName: formIcon, colorIndex: formColorIndex } : item));
-            } else {
-              setApps([...apps, { id: Date.now(), name: formName, category: formCategory, description: formDescription, link: formattedLink, iconName: formIcon, colorIndex: formColorIndex }]);
-            }
-            setIsModalOpen(false);
-          };
-
-          const handleDeleteApp = (id, name) => {
-            if (window.confirm(`Bạn có muốn xóa lối tắt đến "${name}"?`)) {
-              setApps(apps.filter(item => item.id !== id));
-            }
-          };
-
-          const filteredApps = apps.filter(app => {
-            return (app.name.toLowerCase().includes(searchQuery.toLowerCase()) || app.description.toLowerCase().includes(searchQuery.toLowerCase())) && (activeCategory === 'Tất cả' || app.category === activeCategory);
-          });
-
-          return (
-            <div className="min-h-screen bg-slate-50 font-sans flex flex-col md:flex-row">
-              {/* Sidebar */}
-              <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
-                <div className="h-full flex flex-col justify-between">
-                  <div>
-                    <div className="p-6 flex items-center gap-3 border-b border-slate-100">
-                      <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white p-2.5 rounded-xl">
-                        <LayoutGrid size={22} />
-                      </div>
-                      <div>
-                        <h1 className="text-lg font-extrabold text-slate-800">Team Hub</h1>
-                        <p className="text-xs text-slate-400">Ứng dụng nội bộ</p>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-3">Phân loại</p>
-                      <nav className="space-y-1">
-                        {categories.map(category => (
-                          <button key={category} onClick={() => { setActiveCategory(category); setIsMobileMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold ${activeCategory === category ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}>
-                            <span>{category}</span>
-                            {activeCategory === category && <ChevronRight size={16} />}
-                          </button>
-                        ))}
-                      </nav>
-                    </div>
-                  </div>
-                  <div className="p-4 border-t border-slate-100">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-semibold text-slate-400 uppercase">Chế độ Admin</span>
-                      <button onClick={() => setIsAdminMode(!isAdminMode)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAdminMode ? 'bg-blue-600' : 'bg-slate-200'}`}>
-                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isAdminMode ? 'translate-x-6' : 'translate-x-1'}`} />
-                      </button>
-                    </div>
-                    {isAdminMode && (
-                      <button onClick={handleOpenAddModal} className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
-                        <Plus size={16} /> Thêm ứng dụng
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </aside>
-
-              {/* Main Content */}
-              <main className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                  <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 text-slate-600"><Menu size={22} /></button>
-                  <div className="relative max-w-md w-full hidden sm:block">
-                    <input type="text" placeholder="Tìm ứng dụng..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl text-sm border focus:outline-none" />
-                    <Search size={18} className="absolute left-3 top-2.5 text-slate-400" />
-                  </div>
-                  <div className="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">
-                    {isAdminMode ? 'Chế độ Admin' : 'Chế độ xem'}
-                  </div>
-                </header>
-
-                <div className="flex-1 overflow-y-auto p-6 md:p-8">
-                  <div className="mb-6">
-                    <h2 className="text-xl font-extrabold text-slate-800">Xin chào, Team! ⚡</h2>
-                    <p className="text-xs text-slate-500">Danh sách lối tắt truy cập các công cụ của phòng ban.</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredApps.map(app => {
-                      const SelectedIcon = ICON_MAP[app.iconName] || AppWindow;
-                      const color = COLOR_MAP[app.colorIndex || 0];
-                      return (
-                        <div key={app.id} className="group relative bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all flex flex-col h-full">
-                          {isAdminMode && (
-                            <div className="absolute top-4 right-4 flex gap-1">
-                              <button onClick={() => handleOpenEditModal(app)} className="p-1 bg-slate-50 hover:bg-blue-50 text-slate-500 rounded"><Edit2 size={12} /></button>
-                              <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1 bg-slate-50 hover:bg-red-50 text-slate-500 rounded"><Trash2 size={12} /></button>
-                            </div>
-                          )}
-                          <div className="flex justify-between items-start mb-3">
-                            <div className={`p-2.5 rounded-xl ${color.bg} ${color.text}`}><SelectedIcon size={20} /></div>
-                            <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 rounded-full">{app.category}</span>
-                          </div>
-                          <h3 className="font-bold text-slate-800 mb-1">{app.name}</h3>
-                          <p className="text-xs text-slate-500 mb-4 flex-1">{app.description}</p>
-                          <a href={app.link} target="_blank" rel="noreferrer" className="mt-auto py-2 bg-slate-50 hover:bg-blue-600 hover:text-white rounded-xl text-xs font-bold text-center transition-all block">Truy cập trực tiếp</a>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </main>
-
-              {/* Modal form */}
-              {isModalOpen && (
-                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-                  <div className="bg-white p-6 rounded-2xl max-w-md w-full">
-                    <h3 className="font-bold text-slate-800 mb-4">{editingApp ? 'Sửa ứng dụng' : 'Thêm ứng dụng mới'}</h3>
-                    <form onSubmit={handleSaveApp} className="space-y-3 text-xs">
-                      <input type="text" required placeholder="Tên ứng dụng" value={formName} onChange={e => setFormName(e.target.value)} className="w-full p-2 border rounded-lg" />
-                      <input type="text" required placeholder="Link URL" value={formLink} onChange={e => setFormLink(e.target.value)} className="w-full p-2 border rounded-lg" />
-                      <textarea placeholder="Mô tả" value={formDescription} onChange={e => setFormDescription(e.target.value)} className="w-full p-2 border rounded-lg" />
-                      <select value={formCategory} onChange={e => setFormCategory(e.target.value)} className="w-full p-2 border rounded-lg bg-white">
-                        {categories.filter(c => c !== 'Tất cả').map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                      <div className="flex justify-end gap-2 pt-2">
-                        <button type="button" onClick={() => setIsModalOpen(false)} className="px-3 py-1.5 text-slate-500">Hủy</button>
-                        <button type="submit" className="px-4 py-1.5 bg-blue-600 text-white rounded-lg">Lưu</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
+        // HIỂN THỊ DANH MỤC TRÊN SIDEBAR
+        function renderCategories() {
+            const container = document.getElementById('category-list');
+            container.innerHTML = categories.map(cat => {
+                const isActive = activeCategory === cat;
+                return `
+                    <button onclick="setCategory('${cat}')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                        isActive ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+                    }">
+                        <span class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-blue-600' : 'bg-transparent'}"></span>
+                            ${cat}
+                        </span>
+                        ${isActive ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>` : ''}
+                    </button>
+                `;
+            }).join('');
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // PHÂN LOẠI DANH MỤC
+        function setCategory(cat) {
+            activeCategory = cat;
+            renderCategories();
+            renderApps();
+            toggleMobileSidebar(false);
+        }
+
+        // TÌM KIẾM
+        function handleSearch(val) {
+            searchQuery = val;
+            document.getElementById('search-input').value = val;
+            document.getElementById('search-input-mobile').value = val;
+            renderApps();
+        }
+
+        // XÓA BỘ LỌC
+        function clearFilters() {
+            searchQuery = '';
+            activeCategory = 'Tất cả';
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-input-mobile').value = '';
+            renderCategories();
+            renderApps();
+        }
+
+        // HIỂN THỊ CÁC THẺ APP
+        function renderApps() {
+            const grid = document.getElementById('apps-grid');
+            const noResults = document.getElementById('no-results');
+
+            const filtered = apps.filter(app => {
+                const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      (app.description && app.description.toLowerCase().includes(searchQuery.toLowerCase()));
+                const matchesCategory = activeCategory === 'Tất cả' || app.category === activeCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(app => {
+                const color = COLOR_MAP[app.colorIndex || 0] || COLOR_MAP[0];
+                const iconSvg = SVG_ICONS[app.iconName] || SVG_ICONS['AppWindow'];
+                
+                return `
+                    <div class="group relative bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                        <!-- Nút quản trị (Chỉ hiện khi ở chế độ admin) -->
+                        ${isAdminMode ? `
+                            <div class="absolute top-4 right-4 flex items-center gap-1 z-20">
+                                <button onclick="openEditModal(${app.id})" class="p-1.5 bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-lg border border-slate-200 transition-colors" title="Sửa">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </button>
+                                <button onclick="deleteApp(${app.id}, '${app.name}')" class="p-1.5 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-lg border border-slate-200 transition-colors" title="Xóa">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex items-start justify-between mb-4">
+                          <div class="p-3 rounded-2xl ${color.bg} ${color.text} border ${color.border}">
+                            ${iconSvg}
+                          </div>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                            ${app.category}
+                          </span>
+                        </div>
+
+                        <h3 class="text-base font-bold text-slate-800 mb-1.5 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                          ${app.name}
+                        </h3>
+                        <p class="text-xs text-slate-500 leading-relaxed flex-1 line-clamp-3 mb-5">
+                          ${app.description || 'Không có mô tả chi tiết.'}
+                        </p>
+
+                        <a href="${app.link}" target="_blank" rel="noopener noreferrer" class="mt-auto inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 hover:bg-blue-600 hover:text-white transition-all duration-200 border border-slate-100">
+                          <span>Truy cập ứng dụng</span>
+                          <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // BẬT / TẮT CHẾ ĐỘ ADMIN
+        function setupAdminToggle() {
+            const btn = document.getElementById('admin-toggle-btn');
+            const circle = document.getElementById('admin-toggle-circle');
+            const actions = document.getElementById('admin-actions');
+            const badge = document.getElementById('role-badge');
+
+            btn.addEventListener('click', () => {
+                isAdminMode = !isAdminMode;
+                if (isAdminMode) {
+                    btn.classList.replace('bg-slate-200', 'bg-blue-600');
+                    circle.classList.replace('translate-x-1', 'translate-x-6');
+                    actions.classList.remove('hidden');
+                    badge.innerHTML = '<span class="flex items-center gap-1 text-amber-700 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full animate-pulse">Quản trị viên</span>';
+                } else {
+                    btn.classList.replace('bg-blue-600', 'bg-slate-200');
+                    circle.classList.replace('translate-x-6', 'translate-x-1');
+                    actions.classList.add('hidden');
+                    badge.innerHTML = 'Chế độ xem';
+                }
+                renderApps();
+            });
+        }
+
+        // THIẾT LẬP BẢNG MÀU & ICON TRONG FORM
+        function setupColorSelector() {
+            const container = document.getElementById('color-selector');
+            container.innerHTML = COLOR_MAP.map((col, idx) => `
+                <button type="button" onclick="selectColor(${idx})" class="h-10 rounded-xl border flex items-center justify-center transition-all ${col.bg} ${col.text} ${idx === selectedColorIndex ? 'ring-2 ring-blue-500 border-transparent scale-105' : 'border-slate-100'}">
+                    <span class="w-3 h-3 rounded-full bg-current"></span>
+                </button>
+            `).join('');
+        }
+
+        function selectColor(idx) {
+            selectedColorIndex = idx;
+            setupColorSelector();
+        }
+
+        // FORM PHÂN LOẠI
+        function setupFormCategories() {
+            const select = document.getElementById('form-category');
+            select.innerHTML = categories.filter(c => c !== 'Tất cả').map(c => `
+                <option value="${c}">${c}</option>
+            `).join('');
+        }
+
+        // MỞ MODAL THÊM
+        function openAddModal() {
+            document.getElementById('modal-title').innerText = 'Thêm Ứng Dụng Mới';
+            document.getElementById('form-id').value = '';
+            document.getElementById('form-name').value = '';
+            document.getElementById('form-link').value = '';
+            document.getElementById('form-description').value = '';
+            document.getElementById('form-category').value = 'Công cụ';
+            selectedColorIndex = 0;
+            selectedIconName = 'AppWindow';
+            setupColorSelector();
+            
+            const modal = document.getElementById('app-modal');
+            modal.classList.remove('hidden');
+        }
+
+        // MỞ MODAL SỬA
+        function openEditModal(id) {
+            const app = apps.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('modal-title').innerText = 'Cập Nhật Lối Tắt';
+            document.getElementById('form-id').value = app.id;
+            document.getElementById('form-name').value = app.name;
+            document.getElementById('form-link').value = app.link;
+            document.getElementById('form-description').value = app.description || '';
+            document.getElementById('form-category').value = app.category;
+            selectedColorIndex = app.colorIndex || 0;
+            selectedIconName = app.iconName || 'AppWindow';
+            setupColorSelector();
+
+            const modal = document.getElementById('app-modal');
+            modal.classList.remove('hidden');
+        }
+
+        // ĐÓNG MODAL
+        function closeModal() {
+            document.getElementById('app-modal').classList.add('hidden');
+        }
+
+        // LƯU FORM (THÊM / SỬA)
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-id').value;
+            const name = document.getElementById('form-name').value.trim();
+            let link = document.getElementById('form-link').value.trim();
+            const description = document.getElementById('form-description').value.trim();
+            const category = document.getElementById('form-category').value;
+
+            if (!name || !link) {
+                showAlert('Vui lòng nhập đầy đủ thông tin Tên và Đường dẫn!');
+                return;
+            }
+
+            if (!/^https?:\/\//i.test(link)) {
+                link = 'https://' + link;
+            }
+
+            if (id) {
+                // Đang sửa
+                apps = apps.map(app => app.id === parseInt(id) ? {
+                    ...app, name, link, description, category, colorIndex: selectedColorIndex, iconName: selectedIconName
+                } : app);
+            } else {
+                // Thêm mới
+                apps.push({
+                    id: Date.now(), name, link, description, category, colorIndex: selectedColorIndex, iconName: 'AppWindow'
+                });
+            }
+
+            saveData();
+            closeModal();
+            renderApps();
+            showAlert('Đã lưu ứng dụng thành công!');
+        }
+
+        // XÓA ỨNG DỤNG
+        function deleteApp(id, name) {
+            showConfirm(`Bạn có chắc muốn xóa ứng dụng "${name}" không?`, () => {
+                apps = apps.filter(app => app.id !== id);
+                saveData();
+                renderApps();
+            });
+        }
+
+        // KHÔI PHỤC BAN ĐẦU
+        function resetToDefault() {
+            showConfirm('Bạn có muốn khôi phục lại danh sách ứng dụng mẫu ban đầu không? Các mục tự tạo sẽ biến mất.', () => {
+                apps = defaultApps;
+                saveData();
+                renderApps();
+                showAlert('Đã khôi phục dữ liệu gốc.');
+            });
+        }
+
+        // LƯU LÊN LOCALSTORAGE
+        function saveData() {
+            localStorage.setItem('team_hub_apps', JSON.stringify(apps));
+        }
+
+        // SIDEBAR TRÊN DI ĐỘNG
+        function toggleMobileSidebar(open) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (open) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+        document.getElementById('sidebar-overlay').addEventListener('click', () => toggleMobileSidebar(false));
+
+        // HỘP THOẠI THÔNG BÁO TỰ DỰNG (CHẤT LƯỢNG CAO)
+        function showAlert(msg) {
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-dialog').classList.remove('hidden');
+        }
+        function closeAlert() {
+            document.getElementById('alert-dialog').classList.add('hidden');
+        }
+
+        // HỘP THOẠI XÁC NHẬN TỰ DỰNG (CHẤT LƯỢNG CAO)
+        let confirmAction = null;
+        function showConfirm(msg, onOk) {
+            document.getElementById('confirm-msg').innerText = msg;
+            document.getElementById('confirm-dialog').classList.remove('hidden');
+            confirmAction = onOk;
+        }
+        document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+            document.getElementById('confirm-dialog').classList.add('hidden');
+            confirmAction = null;
+        });
+        document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+            document.getElementById('confirm-dialog').classList.add('hidden');
+            if (confirmAction) confirmAction();
+            confirmAction = null;
+        });
     </script>
 </body>
 </html>
