@@ -77,6 +77,33 @@
 
     </div>
 
+    <!-- MODAL ĐĂNG NHẬP ADMIN (PASSCODE GATE) -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200 p-6">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-full bg-blue-950 text-blue-500 flex items-center justify-center mx-auto mb-3 text-xl font-bold">🔒</div>
+                <h3 class="font-extrabold text-white text-lg">Xác thực quyền Admin</h3>
+                <p class="text-slate-400 text-xs mt-1">Vui lòng nhập mật khẩu quản trị viên để bật chế độ chỉnh sửa.</p>
+            </div>
+            
+            <form onsubmit="verifyAdminPassword(event)" class="space-y-4">
+                <div>
+                    <input id="auth-password" type="password" required placeholder="Nhập mật khẩu..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 text-center tracking-widest" />
+                    <p id="auth-error-msg" class="text-red-500 text-[11px] font-bold mt-2 text-center hidden">⚠️ Mật khẩu không chính xác!</p>
+                </div>
+                
+                <div class="text-[11px] text-slate-500 text-center leading-relaxed">
+                    Mật khẩu mặc định thử nghiệm là <span class="text-blue-400 font-bold">admin123</span>.<br/>(Bạn có thể tùy ý sửa đổi trực tiếp mật khẩu này trong mã nguồn).
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAuthModal()" class="w-1/2 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">Hủy</button>
+                    <button type="submit" class="w-1/2 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-colors">Đăng nhập</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL THÊM / CHỈNH SỬA LIÊN KẾT -->
     <div id="app-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200">
@@ -97,7 +124,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Danh mục</label>
-                        <select id="form-category" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        <select id="form-category" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <!-- Category options loaded via JS -->
                         </select>
                     </div>
@@ -145,6 +172,9 @@
 
     <script>
         const CATEGORIES = ['Hệ thống', 'Báo cáo', 'Vận hành', 'Công cụ', 'Tài liệu'];
+
+        // Bạn có thể tùy chỉnh đổi mật khẩu admin tại đây
+        const ADMIN_PASSCODE = '@Thien123';
 
         // Preset images with beautiful abstract high-quality styles
         const PRESET_IMAGES = [
@@ -272,19 +302,67 @@
             const ball = document.getElementById('mode-toggle-ball');
             const addBtn = document.getElementById('add-app-btn');
 
-            btn.addEventListener('click', () => {
-                isAdminMode = !isAdminMode;
-                if (isAdminMode) {
-                    btn.classList.replace('bg-slate-700', 'bg-blue-600');
-                    ball.classList.replace('translate-x-1', 'translate-x-6');
-                    addBtn.classList.remove('hidden');
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (!isAdminMode) {
+                    // Mở cửa sổ yêu cầu nhập Passcode trước khi kích hoạt
+                    openAuthModal();
                 } else {
-                    btn.classList.replace('bg-blue-600', 'bg-slate-700');
-                    ball.classList.replace('translate-x-6', 'translate-x-1');
-                    addBtn.classList.add('hidden');
+                    // Tắt chế độ quản trị trực tiếp không cần xác thực
+                    disableAdminMode();
                 }
-                renderApps();
             });
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-error-msg').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('auth-password').focus();
+            }, 100);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword(e) {
+            e.preventDefault();
+            const enteredPassword = document.getElementById('auth-password').value;
+            const errorMsg = document.getElementById('auth-error-msg');
+
+            if (enteredPassword === ADMIN_PASSCODE) {
+                enableAdminMode();
+                closeAuthModal();
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function enableAdminMode() {
+            isAdminMode = true;
+            const btn = document.getElementById('mode-toggle');
+            const ball = document.getElementById('mode-toggle-ball');
+            const addBtn = document.getElementById('add-app-btn');
+
+            btn.classList.replace('bg-slate-700', 'bg-blue-600');
+            ball.classList.replace('translate-x-1', 'translate-x-6');
+            addBtn.classList.remove('hidden');
+            renderApps();
+        }
+
+        function disableAdminMode() {
+            isAdminMode = false;
+            const btn = document.getElementById('mode-toggle');
+            const ball = document.getElementById('mode-toggle-ball');
+            const addBtn = document.getElementById('add-app-btn');
+
+            btn.classList.replace('bg-blue-600', 'bg-slate-700');
+            ball.classList.replace('translate-x-6', 'translate-x-1');
+            addBtn.classList.add('hidden');
+            renderApps();
         }
 
         function setupFormSelects() {
@@ -387,8 +465,6 @@
         function showCustomDialog(title, message, isWarning, onConfirm) {
             document.getElementById('dialog-title').innerText = title;
             document.getElementById('dialog-msg').innerText = message;
-            
-            const iconBox = document.getElementById('confirm-icon-box');
             
             document.getElementById('dialog-confirm').classList.remove('hidden');
             dialogCallback = onConfirm;
